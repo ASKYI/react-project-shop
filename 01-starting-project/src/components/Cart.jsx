@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { CartContext } from "../store/shopping-cart-context";
 
 export default function Cart() {
   const { items, updateItemQuantity } = useContext(CartContext);
-  const totalPrice = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-  const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
+  const totalPrice = useMemo(() => {
+    return items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+  }, [items]);
 
+  const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
 
   return (
     <div id="cart">

@@ -1,25 +1,18 @@
-import { forwardRef, useImperativeHandle, useRef, useContext } from 'react';
+import { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { CartContext } from '../store/shopping-cart-context';
 import Cart from './Cart';
 
-const CartModal = forwardRef(function Modal(
-  { title, actions },
-  ref
+const CartModal = function Modal(
+  { title, actions, open, onClose }
 ) {
   const dialog = useRef();
-  const { items } = useContext(CartContext);
 
-  useImperativeHandle(ref, () => {
-    return {
-      open: () => {
-        dialog.current.showModal();
-      },
-    };
-  });
+  useEffect(() => {
+    open ? dialog.current.showModal() : dialog.current.close();
+  }, [open]);
 
   return createPortal(
-    <dialog id="modal" ref={dialog}>
+    <dialog id="modal" ref={dialog} onClose={onClose}>
       <h2>{title}</h2>
       <Cart />
       <form method="dialog" id="modal-actions">
@@ -28,6 +21,6 @@ const CartModal = forwardRef(function Modal(
     </dialog>,
     document.getElementById('modal')
   );
-});
+};
 
 export default CartModal;

@@ -1,17 +1,21 @@
-import { useContext, useRef } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { CartContext } from '../store/shopping-cart-context.jsx';
 
 import CartModal from './CartModal.jsx';
 
 export default function Header() {
-  const modal = useRef();
   const { items } = useContext(CartContext);
+  const [isOpen, setIsOpen] = useState(false);
 
   const cartQuantity = items.length;
 
-  function handleOpenCartClick() {
-    modal.current.open();
-  }
+  const handleOpenCartClick = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const handleCloseCart = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   let modalActions = <button>Close</button>;
 
@@ -27,9 +31,10 @@ export default function Header() {
   return (
     <>
       <CartModal
-        ref={modal}
         title="Your Cart"
         actions={modalActions}
+        open={isOpen}
+        onClose={handleCloseCart}
       />
       <header id="main-header">
         <div id="main-title">
